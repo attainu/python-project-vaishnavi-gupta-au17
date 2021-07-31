@@ -1,68 +1,29 @@
-import heapq
-from collections import defaultdict, OrderedDict
-from car import Car
 from parking_details import ParkingLot
+from car import Car
 
-print("Welcome to ParkingLot System")
+parking_lot = ParkingLot()
 
-parking_lot = ParkingLot(6)
-print(parking_lot.available_parking_lots)
+cars = [
+    Car('KA-01-HH-1234', 'White'),
+    Car('KA-01-HH-9999', 'White'),
+    Car('KA-01-BB-0001', 'Black'),
+    Car('KA-01-HH-7777', 'Red'),
+    Car('KA-01-HH-2701', 'Blue'),
+    Car('KA-01-HH-3141', 'Black'),
+]
 
-car = Car("KA-01-HH-1234", "White")
-parking_lot.park_car(car)
+assert parking_lot.create_parking_lot(6) is True
 
-car = Car("KA-01-HH-9999", "White")
-parking_lot.park_car(car)
+for i in range(0, len(cars)):
+    assert parking_lot.park(cars[i]) == i + 1
 
-car = Car("KA-01-BB-0001", "Black")
-parking_lot.park_car(car)
+assert parking_lot.free(4) is True
+assert parking_lot.status() is True
 
-car = Car("KA-01-HH-7777", "Red")
-parking_lot.park_car(car)
+assert len(parking_lot.available_parking_lots) == 1
+assert parking_lot.park(Car('KA-01-P-333', 'White')) == 4
 
-car = Car("KA-01-HH-2701", "Blue")
-parking_lot.park_car(car)
-
-car = Car("KA-01-HH-3141", "Black")
-parking_lot.park_car(car)
-
-# When no slots are available then
-slot_no = parking_lot.get_nearest_slot()
-print(slot_no)
-slot_no = parking_lot.get_nearest_slot()
-print(slot_no)
-
-# Leave slot no 4
-slot_no_to_be_freed = 4
-parking_lot.free_slot(slot_no_to_be_freed)
-
-heapq.heappush(parking_lot.available_parking_lots, 4)
-
-car = Car("KA-01-P-333", "White")
-parking_lot.park_car(car)
-
-car = Car("DL-12-AA-9999", "White")
-parking_lot.park_car(car)
-parking_lot.status()
-print(parking_lot.available_parking_lots)
-print(parking_lot.registration_slot_mapping)
-print(parking_lot.color_registration_mapping)
-
-registration_numbers = parking_lot.get_registration_nos_by_color('White')
-print("White : {}".format(registration_numbers))
-registration_numbers = parking_lot.get_registration_nos_by_color('Red')
-print("Red : {}".format(registration_numbers))
-registration_numbers = parking_lot.get_registration_nos_by_color('Black')
-print("Black : {}".format(registration_numbers))
-
-slot_nos = parking_lot.get_slot_numbers_by_color('White')
-print("White : {}".format(slot_nos))
-slot_nos = parking_lot.get_slot_numbers_by_color('Red')
-print("Red : {}".format(slot_nos))
-slot_nos = parking_lot.get_slot_numbers_by_color('Black')
-print("Black : {}".format(slot_nos))
-parking_lot.status()
-parking_lot.free_slot(1)
-parking_lot.free_slot(2)
-parking_lot.free_slot(3)
-parking_lot.status()
+assert parking_lot.registration_numbers_for_cars_with_colour('White') == ['KA-01-HH-1234', 'KA-01-HH-9999','KA-01-P-333']
+assert parking_lot.slot_numbers_for_cars_with_colour('White') == [1, 2, 4]
+assert parking_lot.slot_number_for_registration_number('KA-01-HH-3141') == 6
+assert parking_lot.slot_number_for_registration_number('MH-04-AY-1111') is None
