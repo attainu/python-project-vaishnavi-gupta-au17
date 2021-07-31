@@ -58,3 +58,4 @@ if len(sys.argv) == 1:
 else:
     for line in fileinput.input():
         process(line)
+        
